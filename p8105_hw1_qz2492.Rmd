@@ -1,0 +1,51 @@
+---
+title: "p8105_hw1_qz2492"
+author: "Qilin Zheng"
+date: "2022-09-24"
+output: html_document
+---
+
+# Problem 1
+
+```{r penguins dataset}
+data("penguins", package = "palmerpenguins")
+# Remove NULL value and get the mean flipper length
+mean_fl = mean(na.omit(penguins$flipper_length_mm))
+```
+
+The data penguins is consisted of `r nrow(penguins)` rows and `r ncol(penguins)`  columns, including *species*, *island*, *bill_length_mm*, *bill_depth_mm*, *flipper_length_mm*, *body_mass_g*, *sex*, and *year*.  
+*species* is consisted of _Adelie_, _Chinstrap_ and _Gentoo_, and _island_ is consisted of _Biscoe_, _Dream_ and _Torgersen_. 
+From the data we can know the mean flipper length is `r round(mean_fl, digits = 2)`mm.
+```{r make a scatter plot and save it}
+library(tidyverse)
+# Convert to factor variable
+penguins$species = factor(penguins$species)
+# Make a scatter plot
+sc_plot = ggplot(data = penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+# Save the plot
+ggsave("sc_plot.png")
+```
+
+# Problem 2
+```{r dataframe}
+# Generate the data frame
+random_df = tibble(
+  norm_samp = rnorm(10),
+  norm_samp_pos = norm_samp > 0,
+  char_vec = c('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'),
+  fac_vec = factor(c('h', 'h', 'h', 'm', 'm', 'm', 'm', 'l', 'l', 'l'), levels = c('h', 'm', 'l'))
+)
+# Calculate the mean value of each column
+mean_n_s = mean(random_df %>% pull(norm_samp))
+mean_n_s_p = mean(random_df %>% pull(norm_samp_pos))
+mean_c_V = mean(random_df %>% pull(char_vec)) # didn't work
+mean_f_v = mean(random_df %>% pull(fac_vec)) # didn't work
+```
+
+```{r function of as.numeric, eval=FALSE}
+as.numeric(random_df %>% pull(norm_samp_pos))
+as.numeric(random_df %>% pull(char_vec))
+as.numeric(random_df %>% pull(fac_vec))
+```
+The logical vector and factor vector are successfully converted to numeric variables, I think this is because they have some ordinal connections so that R can express it through numbers. But the character vector is converted to NAs, which is due to its disorder.  
+But basically, the failure to take the mean value is owing to the variable type.
